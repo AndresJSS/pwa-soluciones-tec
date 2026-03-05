@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroTech Joven - E-Learning</title>
+    <style>
+        :root {
+            --primary: #007D40;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        
+        body { background-color: #cbd5e1; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+        .app-container {
+            width: 100%; max-width: 400px; height: 850px; max-height: 100vh;
+            background-color: var(--bg-color); position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; border-radius: 20px;
+        }
+
+        .header { background-color: var(--primary); color: white; padding: 20px; text-align: center; font-size: 1.2rem; font-weight: bold; z-index: 10; }
+
+        .view { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-bottom: 80px; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); cursor: pointer; }
+        .card:active { transform: scale(0.98); }
+        .card-title { margin: 0 0 8px 0; color: var(--text-main); font-size: 1.1rem; }
+        .card-subtitle { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+
+        /* Categorías (Píldoras) */
+        .category-pill { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; background: #e2e8f0; color: #475569; }
+        .cat-ciencia { background: #dbeafe; color: #1e40af; }
+        .cat-comercio { background: #fef08a; color: #854d0e; }
+
+        .course-header { background: var(--card-bg); padding: 20px; border-bottom: 1px solid var(--border); margin: -20px -20px 20px -20px; }
+        
+        .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; text-align: center; font-size: 0.95rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;}
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-pdf { background-color: #fee2e2; color: #dc2626; border: 2px dashed #f87171; }
+        .btn-danger { background-color: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+
+        .progress-container { margin-top: 20px; }
+        .progress-bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 0.4s ease; }
+
+        .module-list { list-style: none; padding: 0; margin: 0; }
+        .module-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .module-checkbox { width: 24px; height: 24px; accent-color: var(--success); cursor: pointer; }
+        .module-text { flex: 1; font-weight: 500; color: var(--text-main); }
+        .module-status { font-size: 0.8rem; color: var(--text-muted); }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-main); font-weight: 500; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); }
+
+        .bottom-nav { position: absolute; bottom: 0; width: 100%; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 10;}
+        .nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.9rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+        .nav-btn.active { color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header class="header">🌱 AgroTech Joven</header>
+
+    <div id="view-dashboard" class="view active">
+        <h2 style="color: var(--text-main); font-size: 1.4rem;">Proyectos en Curso</h2>
+        
+        <div class="card" onclick="openCourse('hidroponia')">
+            <span class="category-pill cat-ciencia">Ciencia y Tecnología</span>
+            <h3 class="card-title">Sistema Hidropónico (NFT)</h3>
+            <div class="progress-container" style="margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Progreso actual</span>
+                    <span id="dash-progress-text">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="dash-progress-fill"></div></div>
+            </div>
+            <p style="text-align: right; color: var(--primary); font-size: 0.9rem; font-weight: bold; margin: 10px 0 0 0;">Continuar ➡️</p>
+        </div>
+
+        <div style="text-align: center; padding: 20px; margin-top: 20px; border: 2px dashed var(--border); border-radius: 12px;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">¿Tienes espacio para más innovación?</p>
+            <button class="btn btn-primary" onclick="switchNav('view-catalog', 1)" style="width: auto; padding: 8px 16px; margin: 0 auto;">Explorar Catálogo</button>
+        </div>
+    </div>
+
+    <div id="view-catalog" class="view">
+        <h2 style="color: var(--text-main); font-size: 1.4rem; margin-top: 0;">Catálogo de Soluciones</h2>
+        <input type="text" placeholder="🔍 Buscar tecnología..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; background: var(--card-bg); color: var(--text-main);">
+
+        <div class="card" onclick="openCourse('hidroponia')">
+            <span class="category-pill cat-ciencia">Ciencia y Tecnología</span>
+            <h3 class="card-title">Biodigestor tubular a pequeña escala</h3>
+            <p class="card-subtitle">Producción acelerada en espacios reducidos.</p>
+        </div>
+        <div class="card" onclick="openCourse('secador')">
+            <span class="category-pill cat-comercio">Comercio y Valor</span>
+            <h3 class="card-title">Secador solar de túnel</h3>
+            <p class="card-subtitle">Agregación de valor post-cosecha para granos.</p>
+        </div>
+        <div class="card" onclick="openCourse('biodigestor')">
+            <span class="category-pill cat-ciencia">Recursos naturales</span>
+            <h3 class="card-title">Captación y almacenamiento de agua de lluvia y de humedad</h3>
+            <p class="card-subtitle">Técnicas para captar agua de lluvia.</p>
+        </div>
+    </div>
+
+    <div id="view-settings" class="view">
+        <h2 style="color: var(--text-main); font-size: 1.4rem; margin-top: 0;">Mi Perfil y Ajustes</h2>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom: 15px;">Preferencias de la App</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: var(--text-main); font-weight: 500;">Modo Oscuro (Nocturno)</span>
+                <input type="checkbox" style="width: 20px; height: 20px;" onchange="document.body.classList.toggle('dark-mode')">
+            </div>
+        </div>
+    </div>
+
+    <div id="view-course" class="view">
+        <div class="course-header">
+            <button onclick="switchNav('view-dashboard', 0)" style="background:none; border:none; color:var(--primary); font-weight:bold; margin-bottom:10px; cursor:pointer;">⬅ Volver al inicio</button>
+            <br>
+            <span id="course-category" class="category-pill">Categoría</span>
+            <h2 id="course-title" style="margin:5px 0; color: var(--text-main);">Título</h2>
+            
+            <a href="#" download class="btn btn-pdf" id="btn-download">
+                ⬇️ Descargar Manual Completo
+            </a>
+
+            <div class="progress-container">
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight:bold; color: var(--primary);">
+                    <span>Tu avance en la guía:</span>
+                    <span id="course-progress-text">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="course-progress-fill"></div></div>
+            </div>
+        </div>
+
+        <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px;">Ruta de Implementación</h3>
+        <ul class="module-list" id="dynamic-module-list"></ul>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="switchNav('view-dashboard', 0)"><span>🏠</span> Inicio</button>
+        <button class="nav-btn" onclick="switchNav('view-catalog', 1)"><span>📚</span> Catálogo</button>
+        <button class="nav-btn" onclick="switchNav('view-settings', 2)"><span>⚙️</span> Ajustes</button>
+    </nav>
+</div>
+
+<script>
+    // === BASE DE DATOS LOCAL ===
+    // Asegúrate de cambiar 'mi_manual.pdf' por el nombre real de tu archivo de prueba
+    const portfolioData = {
+        'hidroponia': {
+            title: 'Sistema Hidropónico (NFT)',
+            categoryClass: 'cat-ciencia', categoryText: 'Ciencia y Tecnología',
+            pdfFile: 'mi_manual.pdf', // <- Nombre del archivo en tu carpeta
+            modules: [
+                { title: '1. Teoría y Principios Básicos', status: 'Lectura en app' },
+                { title: '2. Sondeo de Mercado Local', status: 'Plantilla de encuesta' },
+                { title: '3. Presupuesto (CAPEX y OPEX)', status: 'Calculadora financiera' },
+                { title: '4. Ensamble de tuberías', status: 'Ver diagrama' },
+                { title: '5. Primer ciclo de cultivo', status: 'Registro en bitácora' }
+            ]
+        },
+        'secador': {
+            title: 'Secador solar de túnel para granos',
+            categoryClass: 'cat-comercio', categoryText: 'Comercio y Valor',
+            pdfFile: 'manual_secador.pdf',
+            modules: [
+                { title: '1. Termodinámica básica', status: 'Principios de convección' },
+                { title: '2. Sondeo de Mercado Local', status: 'Identificar compradores' }
+            ]
+        },
+        'biodigestor': {
+            title: 'Biodigestor tubular',
+            categoryClass: 'cat-ciencia', categoryText: 'Ciencia y Tecnología',
+            pdfFile: 'manual_biodigestor.pdf',
+            modules: [
+                { title: '1. Biotecnología anaeróbica', status: 'Manejo seguro de gases' },
+                { title: '2. Planificación y Presupuesto', status: 'Cálculo de materiales' }
+            ]
+        }
+    };
+
+    let activeCourseId = 'hidroponia';
+
+    function switchNav(viewId, btnIndex) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(btn => btn.classList.remove('active'));
+        if(btns[btnIndex]) btns[btnIndex].classList.add('active');
+    }
+
+    function openCourse(courseId) {
+        activeCourseId = courseId;
+        const data = portfolioData[courseId];
+
+        document.getElementById('course-title').innerText = data.title;
+        const catBadge = document.getElementById('course-category');
+        catBadge.className = 'category-pill ' + data.categoryClass;
+        catBadge.innerText = data.categoryText;
+        
+        // ACTUALIZAR ENLACE DEL PDF
+        document.getElementById('btn-download').href = data.pdfFile;
+
+        const listContainer = document.getElementById('dynamic-module-list');
+        listContainer.innerHTML = '';
+        data.modules.forEach(mod => {
+            const li = document.createElement('li');
+            li.className = 'module-item';
+            li.innerHTML = `
+                <input type="checkbox" class="module-checkbox" onchange="updateProgress()">
+                <div class="module-text">${mod.title}<div class="module-status">${mod.status}</div></div>
+            `;
+            listContainer.appendChild(li);
+        });
+
+        document.getElementById('course-progress-fill').style.width = '0%';
+        document.getElementById('course-progress-text').innerText = '0%';
+
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-course').classList.add('active');
+    }
+
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('.module-checkbox');
+        const percentage = Math.round((document.querySelectorAll('.module-checkbox:checked').length / checkboxes.length) * 100);
+        
+        document.getElementById('course-progress-fill').style.width = percentage + '%';
+        document.getElementById('course-progress-text').innerText = percentage + '%';
+        
+        if (activeCourseId === 'hidroponia') {
+            document.getElementById('dash-progress-fill').style.width = percentage + '%';
+            document.getElementById('dash-progress-text').innerText = percentage + '%';
+        }
+
+        if (percentage === 100) setTimeout(() => alert('¡Felicidades! Has completado la ruta.\n\n¿Compartir con la DCT del IICA?'), 500);
+    }
+</script>
+
+</body>
+</html>
