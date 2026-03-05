@@ -53,9 +53,7 @@
 
         .course-header { background: var(--card-bg); padding: 20px; border-bottom: 1px solid var(--border); margin: -20px -20px 20px -20px; }
         
-        /* Botones ajustados para compartir espacio */
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; text-align: center; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px;}
+        .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; text-align: center; font-size: 0.95rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;}
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-pdf { background-color: #fee2e2; color: #dc2626; border: 2px dashed #f87171; }
         .btn-danger { background-color: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
@@ -77,9 +75,6 @@
         .bottom-nav { position: absolute; bottom: 0; width: 100%; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 10;}
         .nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.9rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
         .nav-btn.active { color: var(--primary); font-weight: bold; }
-
-        /* Estilo para el contenedor del PDF */
-        .pdf-viewer-container { display: none; margin-top: 15px; height: 400px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #fff; }
     </style>
 </head>
 <body>
@@ -92,7 +87,7 @@
         
         <div class="card" onclick="openCourse('hidroponia')">
             <span class="category-pill cat-ciencia">Ciencia y Tecnología</span>
-            <h3 class="card-title">Biodigestor tubular a pequeña escala</h3>
+            <h3 class="card-title">Sistema Hidropónico (NFT)</h3>
             <div class="progress-container" style="margin-top: 10px;">
                 <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
                     <span>Progreso actual</span>
@@ -115,7 +110,7 @@
 
         <div class="card" onclick="openCourse('hidroponia')">
             <span class="category-pill cat-ciencia">Ciencia y Tecnología</span>
-            <h3 class="card-title">Sistema Hidropónico básico (NFT)</h3>
+            <h3 class="card-title">Biodigestor tubular a pequeña escala</h3>
             <p class="card-subtitle">Producción acelerada en espacios reducidos.</p>
         </div>
         <div class="card" onclick="openCourse('secador')">
@@ -124,9 +119,9 @@
             <p class="card-subtitle">Agregación de valor post-cosecha para granos.</p>
         </div>
         <div class="card" onclick="openCourse('biodigestor')">
-            <span class="category-pill cat-ciencia">Comercio</span>
-            <h3 class="card-title">Deshidratador solar de alimentos</h3>
-            <p class="card-subtitle">Secado de alimentos</p>
+            <span class="category-pill cat-ciencia">Recursos naturales</span>
+            <h3 class="card-title">Captación y almacenamiento de agua de lluvia y de humedad</h3>
+            <p class="card-subtitle">Técnicas para captar agua de lluvia.</p>
         </div>
     </div>
 
@@ -148,14 +143,9 @@
             <span id="course-category" class="category-pill">Categoría</span>
             <h2 id="course-title" style="margin:5px 0; color: var(--text-main);">Título</h2>
             
-            <div class="btn-group">
-                <button class="btn btn-primary" id="btn-view-pdf" onclick="togglePdfViewer()">👁️ Leer en App</button>
-                <a href="#" download class="btn btn-pdf" id="btn-download">⬇️ Descargar PDF</a>
-            </div>
-
-            <div id="pdf-viewer-container" class="pdf-viewer-container">
-                <iframe id="pdf-iframe" src="" width="100%" height="100%" style="border: none;"></iframe>
-            </div>
+            <a href="#" download class="btn btn-pdf" id="btn-download">
+                ⬇️ Descargar Manual Completo
+            </a>
 
             <div class="progress-container">
                 <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight:bold; color: var(--primary);">
@@ -184,7 +174,7 @@
         'hidroponia': {
             title: 'Sistema Hidropónico (NFT)',
             categoryClass: 'cat-ciencia', categoryText: 'Ciencia y Tecnología',
-            pdfFile: 'manual-practico-biodigestor.pdf', // <- Nombre del archivo en tu carpeta
+            pdfFile: 'mi_manual.pdf', // <- Nombre del archivo en tu carpeta
             modules: [
                 { title: '1. Teoría y Principios Básicos', status: 'Lectura en app' },
                 { title: '2. Sondeo de Mercado Local', status: 'Plantilla de encuesta' },
@@ -232,13 +222,8 @@
         catBadge.className = 'category-pill ' + data.categoryClass;
         catBadge.innerText = data.categoryText;
         
-        // ACTUALIZAR ENLACES DEL PDF
+        // ACTUALIZAR ENLACE DEL PDF
         document.getElementById('btn-download').href = data.pdfFile;
-        document.getElementById('pdf-iframe').src = data.pdfFile;
-        
-        // Esconder visor PDF por defecto al cambiar de curso
-        document.getElementById('pdf-viewer-container').style.display = 'none';
-        document.getElementById('btn-view-pdf').innerHTML = '👁️ Leer en App';
 
         const listContainer = document.getElementById('dynamic-module-list');
         listContainer.innerHTML = '';
@@ -257,20 +242,6 @@
 
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById('view-course').classList.add('active');
-    }
-
-    // Función para mostrar/ocultar el visualizador PDF
-    function togglePdfViewer() {
-        const container = document.getElementById('pdf-viewer-container');
-        const btn = document.getElementById('btn-view-pdf');
-        
-        if (container.style.display === 'none' || container.style.display === '') {
-            container.style.display = 'block';
-            btn.innerHTML = '❌ Cerrar Visor';
-        } else {
-            container.style.display = 'none';
-            btn.innerHTML = '👁️ Leer en App';
-        }
     }
 
     function updateProgress() {
