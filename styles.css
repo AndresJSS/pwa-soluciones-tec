@@ -1,0 +1,313 @@
+:root {
+    /* Paleta oficial IICA para web */
+    --primary: #003366; /* Azul IICA */
+    --success: #669933; /* Verde IICA Web */
+    --danger: #CC0033; /* Rojo IICA Web */
+
+    /* Fondos y superficies */
+    --app-bg: #DBDCDE; /* Pantone 428 (Gris claro institucional) */
+    --view-bg: #F8FAFC; 
+    --card-bg: #FFFFFF;
+
+    /* Textos y bordes */
+    --text-main: #1E293B;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
+}
+
+body.dark-mode {
+    /* Modo oscuro elegante entintado con azul */
+    --primary: #003366; 
+    --app-bg: #020617;
+    --view-bg: #0F172A;
+    --card-bg: #1E293B;
+    --text-main: #FFFFFF; 
+    --text-muted: #CBD5E1;
+    --border: #334155;
+    --success: #669933;
+    --accent-ui: #3B82F6;
+}
+
+/* MEJORA ESPECÍFICA: El enlace de "Continuar" en la tarjeta */
+body.dark-mode .card-action {
+    color: var(--accent-ui) !important;
+    font-weight: 700;
+}
+
+/* Asegurar que el título de la vista sea blanco puro */
+body.dark-mode .view-title {
+    color: var(--text-main);
+}
+
+/* Mejora para los checkboxes en modo oscuro */
+body.dark-mode .module-item {
+    border-color: #475569;
+}
+body.dark-mode .module-status {
+    color: #94A3B8;
+}
+
+/* Mejora adicional para el header en modo oscuro */
+body.dark-mode .header {
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Mejora para los botones en modo oscuro para que no se pierdan */
+body.dark-mode .btn-primary {
+    background-color: var(--accent-ui);
+    color: #FFFFFF;
+}
+body.dark-mode .nav-btn.active {
+    color: var(--accent-ui);
+    font-weight: 700;
+}
+
+body.dark-mode .card-action, 
+body.dark-mode .nav-btn.active {
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+* { 
+    box-sizing: border-box; 
+    font-family: 'Roboto', sans-serif; 
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; 
+}
+
+body { 
+    background-color: var(--app-bg); 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+}
+
+.app-container {
+    width: 100%; 
+    max-width: 400px; 
+    height: 850px; 
+    max-height: 100vh;
+    background-color: var(--view-bg); 
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+    border-radius: 16px;
+}
+
+.header { 
+    background-color: var(--primary); 
+    color: white; 
+    padding: 12px 20px; /* Ajustado para dar espacio al logo */
+    z-index: 10; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra el conjunto logo + texto */
+    gap: 12px;
+}
+
+.header-logo {
+    height: 32px; /* Altura controlada para el encabezado móvil */
+    width: auto;
+    /* La zona de protección se garantiza con el gap y el padding del header  */
+}
+
+.header-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.view { 
+    flex: 1; 
+    overflow-y: auto; 
+    display: none; 
+    padding: 24px 20px;
+    padding-bottom: 90px; 
+    animation: fadeIn 0.3s ease; 
+}
+
+.view.active { display: block; }
+
+.view-title {
+    color: var(--text-main);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+.card { 
+    background: var(--card-bg); 
+    border-radius: 12px; 
+    padding: 18px; 
+    margin-bottom: 16px; 
+    border: 1px solid var(--border); 
+    cursor: pointer; 
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); 
+}
+.card:active { transform: scale(0.98); }
+.card-title { margin: 0 0 8px 0; color: var(--text-main); font-size: 1.15rem; font-weight: 500; }
+.card-subtitle { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;}
+.card-action { text-align: right; color: var(--primary); font-size: 0.95rem; font-weight: 700; margin: 12px 0 0 0; }
+
+.empty-state {
+    text-align: center; 
+    padding: 24px; 
+    margin-top: 20px; 
+    border: 2px dashed var(--border); 
+    border-radius: 12px;
+    color: var(--text-muted);
+}
+
+.search-input {
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border); 
+    margin-bottom: 20px; 
+    background: var(--card-bg); 
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+/* Categorías (Píldoras) con paleta secundaria suave */
+.category-pill { 
+    display: inline-block; 
+    padding: 4px 12px; 
+    border-radius: 20px; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    margin-bottom: 12px; 
+    background: #E2E8F0; 
+    color: #475569; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px; 
+}
+.cat-ciencia { background: #DBEAFE; color: #1E40AF; }
+.cat-comercio { background: #FEF08A; color: #854D0E; }
+
+.course-header { 
+    background: var(--card-bg); 
+    padding: 24px 20px; 
+    border-bottom: 1px solid var(--border); 
+    margin: -20px -20px 24px -20px; 
+}
+
+.btn-back {
+    background: none; 
+    border: none; 
+    color: var(--primary); 
+    font-weight: 700; 
+    font-size: 0.95rem;
+    margin-bottom: 15px; 
+    cursor: pointer;
+    padding: 0;
+}
+
+.btn { 
+    width: 100%; 
+    padding: 14px; 
+    border-radius: 8px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    border: none; 
+    text-align: center; 
+    font-size: 0.95rem; 
+    text-decoration: none; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    margin-top: 15px;
+}
+.btn-primary { background-color: var(--primary); color: white; }
+.btn-pdf { background-color: #F8FAFC; color: var(--primary); border: 2px solid var(--primary); }
+
+.progress-container { margin-top: 24px; }
+.progress-bar { 
+    height: 10px; 
+    background: var(--border); 
+    border-radius: 5px; 
+    overflow: hidden; 
+    margin-top: 8px; 
+}
+.progress-fill { 
+    height: 100%; 
+    background: var(--success); 
+    width: 0%; 
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.module-list { list-style: none; padding: 0; margin: 0; }
+.module-item { 
+    background: var(--card-bg); 
+    border: 1px solid var(--border); 
+    border-radius: 8px; 
+    padding: 16px; 
+    margin-bottom: 12px; 
+    display: flex; 
+    align-items: center; 
+    gap: 16px; 
+}
+.module-checkbox { 
+    width: 26px; 
+    height: 26px; 
+    accent-color: var(--success); 
+    cursor: pointer; 
+}
+.module-text { flex: 1; font-weight: 500; color: var(--text-main); font-size: 1rem;}
+.module-status { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; font-weight: 400;}
+
+.bottom-nav { 
+    position: absolute; 
+    bottom: 0; 
+    width: 100%; 
+    background: var(--card-bg); 
+    border-top: 1px solid var(--border); 
+    display: flex; 
+    justify-content: space-around; 
+    padding: 14px 0; 
+    z-index: 10;
+}
+.nav-btn { 
+    background: none; 
+    border: none; 
+    color: var(--text-muted); 
+    font-size: 0.85rem; 
+    font-weight: 500;
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 6px; 
+    flex: 1; 
+}
+.nav-btn.active { color: var(--primary); font-weight: 700; }
+
+/* Estilo para el selector de idiomas */
+.lang-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background-color: var(--view-bg);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+}
+.lang-select:focus {
+    border-color: var(--primary);
+}
