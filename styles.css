@@ -107,21 +107,67 @@ body {
 
 .header-content {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center; /* Centra el conjunto logo + texto */
-    gap: 12px;
+    width: 100%;
+    padding: 0 20px;
+    height: 50px;
 }
 
-.header-logo {
-    height: 32px; /* Altura controlada para el encabezado móvil */
+.header-item {
+    flex: 1; 
+    display: flex;
+    align-items: center;
+}
+
+.header-item.left {
+    justify-content: flex-start;
+}
+
+.header-item.center {
+    justify-content: center;
+}
+
+.header-item.right {
+    justify-content: flex-start;
+}
+
+.header-logo-iica {
+    height: 30px;
     width: auto;
-    /* La zona de protección se garantiza con el gap y el padding del header  */
+    /* Separación extra interna si fuera necesaria */
+    padding-left: 5px;
+}
+
+.header-logo-app {
+    height: 45px; /* Tu nuevo logo puede ser un poco más grande */
+    width: auto;
+    margin-left: 0px;
 }
 
 .header-title {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    text-align: center;
+    
+    /* NUEVO: Garantiza un espacio mínimo de 20 píxeles a la izquierda y derecha */
+    padding: 0 20px; 
+    
+    /* NUEVO: Evita que el título se parta en dos líneas en pantallas pequeñas */
+    white-space: nowrap;
+}
+
+/* Ajuste responsivo para celulares pequeños */
+@media (max-width: 480px) {
+    .header-content {
+        padding: 0 10px; /* Reducimos el borde exterior para dar más espacio adentro */
+    }
+    .header-title {
+        font-size: 1.1rem; /* Hacemos la letra un poco más pequeña */
+        padding: 0 10px; /* Reducimos la separación para que quepa todo */
+    }
+    .header-logo-iica { height: 28px; }
+    .header-logo-app { height: 35px; }
 }
 
 .view { 
@@ -179,7 +225,7 @@ body {
     margin-bottom: 20px; 
     background: var(--card-bg); 
     color: var(--text-main);
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 /* Categorías (Píldoras) con paleta secundaria suave */
@@ -233,7 +279,50 @@ body {
     margin-top: 15px;
 }
 .btn-primary { background-color: var(--primary); color: white; }
-.btn-pdf { background-color: #F8FAFC; color: var(--primary); border: 2px solid var(--primary); }
+.btn-pdf {
+    background-color: var(--primary); /* Azul Institucional IICA */
+    color: #FFFFFF !important; /* Letras blancas obligatorias */
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 15px 0;
+    text-decoration: none; /* Elimina el subrayado por ser una etiqueta <a> */
+    
+    /* Sombra base y transición idéntica al botón verde */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efecto al pasar el puntero (Hover) */
+.btn-pdf:hover {
+    background-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto al presionar (Active) */
+.btn-pdf:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes de contraste para el Modo Oscuro */
+body.dark-mode .btn-pdf {
+    background-color: #3B82F6; /* Un azul un poco más brillante para fondos oscuros */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .btn-pdf:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+}
 
 .progress-container { margin-top: 24px; }
 .progress-bar { 
@@ -310,4 +399,179 @@ body {
 }
 .lang-select:focus {
     border-color: var(--primary);
+}
+
+/* Estilos para matriculación */
+
+.enrolled-badge {
+    background-color: var(--success);
+    color: white;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-left: 10px;
+    box-shadow: 0 2px 4px rgba(102, 153, 51, 0.3);
+}
+
+.btn-enroll {
+    background-color: var(--success); /* Verde IICA */
+    color: #FFFFFF !important; /* Letras blancas obligatorias siempre */
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Sombra base clara */
+    
+    /* Esta es la línea clave que garantiza que la animación fluya siempre */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-enroll:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste para que en modo oscuro el botón siga resaltando */
+body.dark-mode .btn-enroll {
+    background-color: var(--success);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-enroll:hover {
+    background-color: var(--success);
+    
+    /* EFECTO DE ELEVACIÓN PARA MODO CLARO Y OSCURO */
+    transform: translateY(-2px); 
+    
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajuste del botón enroll para el modo oscuro */
+body.dark-mode .btn-enroll {
+    background-color: var(--success); /* Se mantiene el verde institucional */
+    color: #FFFFFF !important; /* Blanco puro obligatorio para legibilidad */
+    
+    /* Aumentamos ligeramente la sombra para separar el botón del fondo oscuro */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+body.dark-mode .btn-back {
+    color: #FFFFFF !important; /* Texto de "Volver" en blanco */
+    opacity: 0.9;
+}
+
+body.dark-mode .btn-back:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Cambiamos el color azul de la etiqueta de progreso y el porcentaje */
+body.dark-mode .progress-container span {
+    color: #FFFFFF !important; /* "Tu avance..." y "X%" en blanco */
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.5); /* Sombra suave para resaltar */
+}
+
+/* Opcional: Si el título del proyecto también se ve oscuro */
+body.dark-mode #course-title {
+    color: #FFFFFF;
+}
+
+body.dark-mode .btn-enroll:hover {
+    background-color: var(--success);
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Estilos para abandonar proyecto */
+
+.danger-zone {
+    margin-top: 30px; 
+    text-align: center; 
+    padding-top: 20px; 
+    border-top: 1px dashed var(--border);
+}
+
+.btn-ghost-danger {
+    background: transparent;
+    color: var(--danger); /* Usa el rojo IICA #CC0033 */
+    border: 1px solid transparent;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-ghost-danger:hover {
+    background-color: rgba(204, 0, 51, 0.08);
+    border-color: var(--danger);
+}
+
+/* Ajuste de accesibilidad para modo oscuro */
+body.dark-mode .btn-ghost-danger {
+    color: #EF4444; /* Un rojo más brillante para fondos oscuros */
+}
+body.dark-mode .btn-ghost-danger:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #EF4444;
+}
+
+/* Estilos para la barra de filtros del catálogo */
+
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Ajustamos el buscador para que comparta el espacio */
+.filter-bar .search-input {
+    margin-bottom: 0; 
+    flex: 60%; /* Toma el 60% del ancho */
+}
+
+/* Estilos para la nueva lista desplegable */
+.category-select {
+    flex: 40%; /* Toma el 40% del ancho */
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    /* Evita que el texto largo deforme el diseño */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.category-select:focus {
+    border-color: var(--primary);
+}
+
+/* Ajuste para el modo oscuro */
+body.dark-mode .category-select {
+    background-color: var(--card-bg);
+    border-color: var(--border);
+    color: var(--text-main);
+}
+body.dark-mode .category-select:focus {
+    border-color: var(--accent-ui);
 }

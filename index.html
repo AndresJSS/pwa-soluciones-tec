@@ -16,54 +16,43 @@
 
 <div class="app-container">
     <header class="header">
-        <div class="header-content">
-            <img src="logo-iica.svg" alt="IICA" class="header-logo">
-            <span class="header-title" data-i18n="app_title">Portafolio de soluciones tecnológicas IICA</span>
-        </div>
-    </header>
-
-    <div id="view-dashboard" class="view active">
-        <h2 class="view-title" data-i18n="dash_title">Proyectos en Curso</h2>
-        
-        <div class="card" onclick="openCourse('biodigestor')">
-            <span class="category-pill cat-ciencia" data-i18n="cat_science">Ciencia y Tecnología</span>
-            <h3 class="card-title" data-i18n="bio_title">Biodigestor tubular a pequeña escala</h3>
-            <div class="progress-container" style="margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
-                    <span data-i18n="progress_label">Progreso actual</span>
-                    <span id="dash-progress-text">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="dash-progress-fill"></div>
-                </div>
-            </div>
-            <p class="card-action" data-i18n="btn_continue">Continuar ➡️</p>
+    <div class="header-content">
+        <div class="header-item left">
+            <img src="logo-iica.svg" alt="IICA" class="header-logo-iica">
         </div>
 
-        <div class="empty-state">
-            <p data-i18n="dash_empty">¿Tienes espacio para más innovación?</p>
-            <button class="btn btn-primary" onclick="switchNav('view-catalog', 1)" style="width: auto; padding: 8px 16px; margin: 0 auto;" data-i18n="btn_explore">Explorar Catálogo</button>
+        <div class="header-item center">
+            <span class="header-title" data-i18n="app_title">InnovaJoven</span>
+        </div>
+
+        <div class="header-item right">
+            <img src="logo-app.png" alt="Logo InnovaJoven" class="header-logo-app">
         </div>
     </div>
+</header>
 
-    <div id="view-catalog" class="view">
-        <h2 class="view-title" data-i18n="catalog_title">Catálogo de Soluciones</h2>
-        <input type="text" class="search-input" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="🔍 Buscar tecnología...">
+    <div id="view-catalog" class="view active">
+        <h2 class="view-title" data-i18n="catalog_title">Catálogo de soluciones</h2>
+        <div class="filter-bar">
+            <input type="text" class="search-input" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="🔍 Buscar proyecto..." oninput="renderCatalog()">
+            
+            <select id="category-filter" class="category-select" onchange="renderCatalog()">
+                <option value="all" data-i18n="cat_all">Todas las categorías</option>
+                <option value="cat-ciencia" data-i18n="cat_science">Ciencia y Tecnología</option>
+                <option value="cat-comercio" data-i18n="cat_commerce">Comercio y Valor</option>
+            </select>
+        </div>
+        <div id="catalog-container"></div>
+    </div>
 
-        <div class="card" onclick="openCourse('biodigestor')">
-            <span class="category-pill cat-ciencia" data-i18n="cat_science">Ciencia y Tecnología</span>
-            <h3 class="card-title" data-i18n="bio_title">Biodigestor tubular a pequeña escala</h3>
-            <p class="card-subtitle" data-i18n="bio_desc">Producción de biogás y biofertilizante.</p>
-        </div>
-        <div class="card" onclick="openCourse('hidroponia')">
-            <span class="category-pill cat-ciencia" data-i18n="cat_science">Ciencia y Tecnología</span>
-            <h3 class="card-title" data-i18n="hidro_title">Sistema Hidropónico (NFT)</h3>
-            <p class="card-subtitle" data-i18n="hidro_desc">Producción acelerada en espacios reducidos.</p>
-        </div>
-        <div class="card" onclick="openCourse('secador')">
-            <span class="category-pill cat-comercio" data-i18n="cat_commerce">Comercio y Valor</span>
-            <h3 class="card-title" data-i18n="secador_title">Secador solar de túnel</h3>
-            <p class="card-subtitle" data-i18n="secador_desc">Agregación de valor post-cosecha para granos.</p>
+    <div id="view-projects" class="view">
+        <h2 class="view-title" data-i18n="dash_title">Proyectos en desarrollo</h2>
+        
+        <div id="enrolled-container"></div>
+
+        <div class="empty-state" id="empty-projects">
+            <p data-i18n="dash_empty">No tienes proyectos inscritos</p>
+            <button class="btn btn-primary" onclick="switchNav('view-catalog', 0)" style="width: auto; padding: 8px 16px; margin: 0 auto;" data-i18n="btn_explore">Explorar Catálogo</button>
         </div>
     </div>
 
@@ -89,7 +78,7 @@
 
     <div id="view-course" class="view">
         <div class="course-header">
-            <button onclick="switchNav('view-dashboard', 0)" class="btn-back" data-i18n="course_back">⬅ Volver al inicio</button>
+            <button onclick="switchNav('view-projects', 1)" class="btn-back" data-i18n="course_back">⬅ Volver a mis proyectos</button>
             <br>
             <span id="course-category" class="category-pill">Categoría</span>
             <h2 id="course-title" style="margin:8px 0 5px 0; color: var(--text-main); font-weight: 700;">Título</h2>
@@ -109,13 +98,20 @@
 
         <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; font-weight: 500;" data-i18n="course_route">Ruta de Implementación</h3>
         <ul class="module-list" id="dynamic-module-list"></ul>
+
+        <div class="danger-zone">
+        <button class="btn-ghost-danger" onclick="unenrollCourse()" data-i18n="btn_unenroll">
+            ❌ Abandonar Proyecto
+        </button>
+    </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="switchNav('view-dashboard', 0)"><span style="font-size: 1.2rem;">🏠</span> <span data-i18n="nav_home">Inicio</span></button>
-        <button class="nav-btn" onclick="switchNav('view-catalog', 1)"><span style="font-size: 1.2rem;">📚</span> <span data-i18n="nav_catalog">Catálogo</span></button>
+        <button class="nav-btn active" onclick="switchNav('view-catalog', 0)"><span style="font-size: 1.2rem;">📚</span> <span data-i18n="nav_catalog">Catálogo</span></button>
+        <button class="nav-btn" onclick="switchNav('view-projects', 1)"><span style="font-size: 1.2rem;">📁</span> <span data-i18n="nav_projects">Mis Proyectos</span></button>
         <button class="nav-btn" onclick="switchNav('view-settings', 2)"><span style="font-size: 1.2rem;">⚙️</span> <span data-i18n="nav_settings">Ajustes</span></button>
     </nav>
+
 </div>
 
 <script src="translations.js"></script>
