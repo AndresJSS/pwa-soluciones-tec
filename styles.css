@@ -575,3 +575,111 @@ body.dark-mode .category-select {
 body.dark-mode .category-select:focus {
     border-color: var(--accent-ui);
 }
+
+/* --- ESTILOS DEL MODAL --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Para que quede por encima de todo */
+    
+    /* Oculto por defecto con animación */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--card-bg); /* Hereda el color de tu tarjeta (claro u oscuro) */
+    color: var(--text-main);
+    width: 90%;
+    max-width: 400px;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    
+    /* Animación de deslizamiento hacia arriba */
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--text-main);
+}
+
+#modal-icon {
+    font-size: 1.5rem;
+}
+
+.modal-body p {
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Respeta los saltos de línea de tu texto de éxito */
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Botones del Modal */
+.btn-modal {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s, opacity 0.2s;
+}
+
+.btn-modal:active {
+    transform: scale(0.95);
+}
+
+.btn-modal.cancel {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+}
+
+.btn-modal.success {
+    background: var(--success); /* Tu verde institucional */
+    color: white;
+}
+
+.btn-modal.danger {
+    background: #EF4444; /* Rojo para advertencias (abandonar) */
+    color: white;
+}
+
+.btn-modal.primary {
+    background: var(--primary); /* Tu azul institucional */
+    color: white;
+}

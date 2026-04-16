@@ -26,8 +26,13 @@ function getPortfolioData(lang) {
             tags: t.hidro_tags,
             categoryClass: 'cat-ciencia', 
             categoryText: t.cat_science,
-            pdfFile: 'manual_hidroponia.pdf',
-            modules: [ { id: 'hidro_1', title: '1. Module', status: '...' } ]
+            pdfFile: 'manual-practico-sistema-hidroponico.pdf',
+            modules: [
+                { id: 'hidro_1', title: t.hidro_mod1, status: t.hidro_stat1 }, { id: 'hidro_2', title: t.hidro_mod2, status: t.hidro_stat2 },
+                { id: 'hidro_3', title: t.hidro_mod3, status: t.hidro_stat3 }, { id: 'hidro_4', title: t.hidro_mod4, status: t.hidro_stat4 },
+                { id: 'hidro_5', title: t.hidro_mod5, status: t.hidro_stat5 }, { id: 'hidro_6', title: t.hidro_mod6, status: t.hidro_stat6 },
+                { id: 'hidro_7', title: t.hidro_mod7, status: t.hidro_stat7 }
+            ]
         },
         'secador': {
             title: t.secador_title, 
@@ -35,8 +40,41 @@ function getPortfolioData(lang) {
             tags: t.secador_tags,
             categoryClass: 'cat-comercio', 
             categoryText: t.cat_commerce,
-            pdfFile: 'manual_secador.pdf',
-            modules: [ { id: 'sec_1', title: '1. Module', status: '...' } ]
+            pdfFile: 'manual-practico-secador-solar-tunel.pdf',
+            modules: [
+                { id: 'secador_1', title: t.secador_mod1, status: t.secador_stat1 }, { id: 'secador_2', title: t.secador_mod2, status: t.secador_stat2 },
+                { id: 'secador_3', title: t.secador_mod3, status: t.secador_stat3 }, { id: 'secador_4', title: t.secador_mod4, status: t.secador_stat4 },
+                { id: 'secador_5', title: t.secador_mod5, status: t.secador_stat5 }, { id: 'secador_6', title: t.secador_mod6, status: t.secador_stat6 },
+                { id: 'secador_7', title: t.secador_mod7, status: t.secador_stat7 }
+            ]
+        },
+        'acuaponia': {
+            title: t.acua_title, 
+            description: t.acua_desc, 
+            tags: t.acua_tags,
+            categoryClass: 'cat-ciencia', // o la clase que prefieras
+            categoryText: t.cat_science,
+            pdfFile: 'manual-practico-sistema-acuaponico-integrado.pdf', // Aquí puedes enlazar un PDF de ejemplo
+            modules: [
+                { id: 'acua_1', title: t.acua_mod1, status: t.acua_stat1 }, { id: 'acua_2', title: t.acua_mod2, status: t.acua_stat2 },
+                { id: 'acua_3', title: t.acua_mod3, status: t.acua_stat3 }, { id: 'acua_4', title: t.acua_mod4, status: t.acua_stat4 },
+                { id: 'acua_5', title: t.acua_mod5, status: t.acua_stat5 }, { id: 'acua_6', title: t.acua_mod6, status: t.acua_stat6 },
+                { id: 'acua_7', title: t.acua_mod7, status: t.acua_stat7 }
+            ]
+        },
+        'huerto_vertical': {
+            title: t.vertical_title, 
+            description: t.vertical_desc, 
+            tags: t.vertical_tags,
+            categoryClass: 'cat-ciencia', 
+            categoryText: t.cat_science,
+            pdfFile: 'manual-practico-huerto-vertical.pdf',
+            modules: [
+                { id: 'vertical_1', title: t.vertical_mod1, status: t.vertical_stat1 }, { id: 'vertical_2', title: t.vertical_mod2, status: t.vertical_stat2 },
+                { id: 'vertical_3', title: t.vertical_mod3, status: t.vertical_stat3 }, { id: 'vertical_4', title: t.vertical_mod4, status: t.vertical_stat4 },
+                { id: 'vertical_5', title: t.vertical_mod5, status: t.vertical_stat5 }, { id: 'vertical_6', title: t.vertical_mod6, status: t.vertical_stat6 },
+                { id: 'vertical_7', title: t.vertical_mod7, status: t.vertical_stat7 }
+            ]
         }
     };
 }
@@ -57,8 +95,16 @@ function enrollCourse(courseId) {
         renderCatalog();
         renderProjects();
         
-        // Alerta de éxito traducida
-        alert(translations[currentLang].enroll_success || "¡Te has inscrito con éxito!");
+        // Obtenemos las traducciones actuales
+        const t = translations[currentLang];
+        
+        // REEMPLAZO: Cambiamos alert por nuestro modal personalizado
+        showModal({
+            type: 'success',
+            icon: '🌱',
+            title: currentLang === 'en' ? 'Project Started!' : (currentLang === 'pt' ? 'Projeto Iniciado!' : '¡Proyecto Iniciado!'),
+            message: t.enroll_success
+        });
     }
 }
 
@@ -236,16 +282,42 @@ function updateProgress(moduleId) {
     const savedProgress = JSON.parse(localStorage.getItem('agrotech_progress')) || {};
     const checkbox = document.getElementById(moduleId);
 
+    // Guardamos el estado (marcado o desmarcado)
     savedProgress[moduleId] = checkbox.checked;
     localStorage.setItem('agrotech_progress', JSON.stringify(savedProgress));
 
+    // Actualizamos visualmente la barra
     updateProgressBarOnly();
 
+    // Verificamos si se completó el 100%
     const checkboxes = document.querySelectorAll('.module-checkbox');
     const checkedCount = document.querySelectorAll('.module-checkbox:checked').length;
 
+    const modalKey = `modal_shown_${activeCourseId}`; // Llave única por proyecto
+
     if (checkedCount === checkboxes.length) {
-        setTimeout(() => alert(translations[currentLang].success_msg), 500);
+        // Solo mostramos el modal si NO se ha mostrado antes para este proyecto
+        if (!localStorage.getItem(modalKey)) {
+            // Mantenemos el retraso de 500ms para que la barra se llene visualmente primero
+            setTimeout(() => {
+                const t = translations[currentLang];
+                
+                showModal({
+                    type: 'primary',
+                    icon: '🏆',
+                    title: currentLang === 'en' ? 'Congratulations!' : (currentLang === 'pt' ? 'Parabéns!' : '¡Felicidades!'),
+                    message: t.success_msg,
+                    btnText: currentLang === 'en' ? 'Accept' : (currentLang === 'pt' ? 'Aceitar' : 'Aceptar'),
+                });
+                
+                // Activamos el candado para que no vuelva a salir
+                localStorage.setItem(modalKey, 'true');
+            }, 500); 
+        }
+    } else {
+        // DETALLE UX: Si el usuario desmarca una casilla por error, quitamos el candado.
+        // Así, cuando vuelva a marcarla y llegue al 100% de nuevo, el sistema lo felicitará.
+        localStorage.removeItem(modalKey);
     }
 }
 
@@ -273,30 +345,73 @@ function updateProgressBarOnly() {
 // === FUNCIÓN PARA DARSE DE BAJA (NUEVO) ===
 function unenrollCourse() {
     const t = translations[currentLang];
-    // Mensaje de confirmación de seguridad
-    const confirmMsg = t.unenroll_confirm || "¿Estás seguro de que deseas abandonar este proyecto? Tu progreso actual se perderá permanentemente.";
     
-    if (confirm(confirmMsg)) {
-        // 1. Lo quitamos de la lista de matriculados
-        let enrolled = getEnrolledList();
-        enrolled = enrolled.filter(id => id !== activeCourseId);
-        localStorage.setItem('agrotech_enrolled', JSON.stringify(enrolled));
-        
-        // 2. Limpiamos su progreso para no guardar "datos basura"
-        const savedProgress = JSON.parse(localStorage.getItem('agrotech_progress')) || {};
-        const data = getPortfolioData(currentLang);
-        const modules = data[activeCourseId].modules;
-        
-        modules.forEach(mod => {
-            delete savedProgress[mod.id];
-        });
-        localStorage.setItem('agrotech_progress', JSON.stringify(savedProgress));
+    showModal({
+        type: 'danger',
+        icon: '⚠️',
+        title: currentLang === 'en' ? 'Drop Project' : (currentLang === 'pt' ? 'Abandonar Projeto' : 'Abandonar Proyecto'),
+        message: t.unenroll_confirm || "¿Estás seguro de que deseas abandonar este proyecto? Tu progreso actual se perderá permanentemente.",
+        btnText: currentLang === 'en' ? 'Yes, drop it' : (currentLang === 'pt' ? 'Sim, abandonar' : 'Sí, abandonar'),
+        onConfirm: () => {
+            // 1. Lo quitamos de la lista de matriculados
+            let enrolled = getEnrolledList();
+            enrolled = enrolled.filter(id => id !== activeCourseId);
+            localStorage.setItem('agrotech_enrolled', JSON.stringify(enrolled));
+            
+            // 2. Limpiamos su progreso para no guardar "datos basura"
+            const savedProgress = JSON.parse(localStorage.getItem('agrotech_progress')) || {};
+            const data = getPortfolioData(currentLang);
+            const modules = data[activeCourseId].modules;
+            
+            modules.forEach(mod => {
+                delete savedProgress[mod.id];
+            });
+            localStorage.setItem('agrotech_progress', JSON.stringify(savedProgress));
 
-        // 3. Actualizamos pantallas y lo devolvemos a su Dashboard
-        renderCatalog();
-        renderProjects();
-        switchNav('view-projects', 1);
+            // 3. Actualizamos pantallas y lo devolvemos a su Dashboard
+            renderCatalog();
+            renderProjects();
+            switchNav('view-projects', 1);
+        }
+    });
+}
+
+// === CONTROLADOR DE MODALES PERSONALIZADOS ===
+function showModal(options) {
+    const modal = document.getElementById('custom-modal');
+    document.getElementById('modal-title').innerText = options.title;
+    document.getElementById('modal-message').innerText = options.message;
+    document.getElementById('modal-icon').innerText = options.icon || 'ℹ️';
+    
+    const footer = document.getElementById('modal-footer');
+    footer.innerHTML = ''; // Limpiamos botones anteriores
+
+    // Detectamos el idioma para los botones genéricos
+    const lang = document.documentElement.lang || 'es';
+    const txtCancel = lang === 'en' ? 'Cancel' : (lang === 'pt' ? 'Cancelar' : 'Cancelar');
+    const txtAccept = lang === 'en' ? 'Accept' : (lang === 'pt' ? 'Aceitar' : 'Aceptar');
+
+    // Si es una acción destructiva (Abandonar) o requiere confirmación, agregamos botón Cancelar
+    if (options.type === 'danger' || options.type === 'primary') {
+        const btnCancel = document.createElement('button');
+        btnCancel.className = 'btn-modal cancel';
+        btnCancel.innerText = txtCancel;
+        btnCancel.onclick = () => modal.classList.remove('active');
+        footer.appendChild(btnCancel);
     }
+
+    // Botón de Acción Principal
+    const btnMain = document.createElement('button');
+    btnMain.className = `btn-modal ${options.type || 'success'}`;
+    btnMain.innerText = options.btnText || txtAccept;
+    
+    btnMain.onclick = () => {
+        if (options.onConfirm) options.onConfirm();
+        modal.classList.remove('active');
+    };
+    
+    footer.appendChild(btnMain);
+    modal.classList.add('active'); // Mostramos el modal
 }
 
 // Inicialización de la App
